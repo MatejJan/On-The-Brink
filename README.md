@@ -1,2 +1,2 @@
-# On-The-Brink
+# On the Brink
 Global Game Jam 2021
