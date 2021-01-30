@@ -8,11 +8,9 @@ public class InventoryItem : MonoBehaviour
 {
     private GameObject itemType;
 
-    private Inventory inventoryScript;
-
+    public Image iconImage;
     public TextMeshProUGUI countText;
     public TextMeshProUGUI debugNameText;
-    public Image image;
     public TextMeshProUGUI toolTipText;
 
     private bool found;
@@ -20,7 +18,7 @@ public class InventoryItem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        inventoryScript = GameObject.Find("Inventory").GetComponent<Inventory>();
+
     }
 
     // Update is called once per frame
@@ -29,60 +27,72 @@ public class InventoryItem : MonoBehaviour
 
     }
 
+    // Sets the information about the item in this spot.
     public void SetItemType(GameObject itemType)
     {
         this.itemType = itemType;
 
         var collectibleItem = itemType.GetComponent<CollectibleItem>();
 
-
-        transform.Find("Silhouette").gameObject.SetActive(true);
-
         debugNameText.SetText(collectibleItem.name);
 
         toolTipText.SetText(collectibleItem.name);
-
     }
 
+    // Update the information about the item in this slot.
     public void Refresh(ItemData itemData)
     {
-        countText.SetText("x" + itemData.Count);
+        countText.SetText(itemData.Count + "");
+
+        // If there is no items of this type in the inventory don't show the item count.
+        if (itemData.Count < 1)
+        {
+            transform.Find("Count").gameObject.SetActive(false);
+        }
+        else
+        {
+            // Show the item count.
+            transform.Find("Count").gameObject.SetActive(true);
+        }
+
         found = itemData.Found;
 
+        // When an item is found hide the silhouette and show the icon instead.
         if (found)
         {
             transform.Find("Silhouette").gameObject.SetActive(false);
             transform.Find("Icon").gameObject.SetActive(true);
 
+            // If there is any of this item type in the inventory show the icon.
             if (itemData.Count > 0)
             {
-                var colorAlpha = image.color;
+                var colorAlpha = iconImage.color;
                 colorAlpha.a = 1f;
-                image.color = colorAlpha;
+                iconImage.color = colorAlpha;
 
                 transform.Find("Icon").GetComponent<Image>().color = colorAlpha;
             }
             else
             {
-                var colorAlpha = image.color;
+                // If there is no items of this type make the icon transparent.
+                var colorAlpha = iconImage.color;
                 colorAlpha.a = 0.5f;
-                image.color = colorAlpha;
+                iconImage.color = colorAlpha;
 
                 transform.Find("Icon").GetComponent<Image>().color = colorAlpha;
             }
         }
     }
 
+    // When the mouse is over the item show the tool tip, the name of the item.
     public void ShowToolTip()
     {
         transform.Find("Tool Tip").gameObject.SetActive(true);
-        Debug.Log("show");
     }
 
+    // When the mouse is no longer over the item, hide the tool tip.
     public void HideToolTip()
     {
         transform.Find("Tool Tip").gameObject.SetActive(false);
-        Debug.Log("hide");
-
     }
 }
