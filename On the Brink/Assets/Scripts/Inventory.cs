@@ -12,7 +12,11 @@ public class ItemData
 
 public class Inventory : MonoBehaviour
 {
-    Dictionary<GameObject, ItemData> inventoryItems = new Dictionary<GameObject, ItemData>();
+    public Dictionary<GameObject, ItemData> inventoryItems = new Dictionary<GameObject, ItemData>();
+
+    public Object[] allItemTypes;
+
+    public InventoryUI inventoryUIScript;
 
     // Gets the number of found collectible items.
     public int FoundCount
@@ -39,25 +43,17 @@ public class Inventory : MonoBehaviour
     void Start()
     {
         // Getting all item prefabs from the resources folder.
-        var allItemTypes = Resources.LoadAll("Collectible Items");
+        allItemTypes = Resources.LoadAll("Collectible Items");
 
         // Create ItemData objects for every item prefab.
         foreach (GameObject itemType in allItemTypes)
         {
             inventoryItems[itemType] = new ItemData();
         }
-    }
 
-    private void Update()
-    {
-        // Debug messages to see that everything works.
-        Debug.Log("Found " + FoundCount);
+        Debug.Log("Inventory start");
 
-        foreach (KeyValuePair<GameObject, ItemData> item in inventoryItems)
-        {
-            Debug.Log(item.Key.name + " count: " + item.Value.Count);
-        }
-
+        GameObject.Find("Canvas").transform.Find("Inventory UI").GetComponent<InventoryUI>().Initialize();
     }
 
     // Add item to inventory and mark it as found.
@@ -66,6 +62,8 @@ public class Inventory : MonoBehaviour
         var itemData = inventoryItems[itemType];
         itemData.Found = true;
         itemData.Count++;
+
+        RefreshItem(itemType);
     }
 
     // Remove and add the correct items after aplying a recipe.
@@ -87,5 +85,12 @@ public class Inventory : MonoBehaviour
     {
         var itemData = inventoryItems[itemType];
         itemData.Count--;
+
+        RefreshItem(itemType);
+    }
+
+    private void RefreshItem(GameObject itemType)
+    {
+        inventoryUIScript.RefreshItem(itemType, inventoryItems[itemType]);
     }
 }
