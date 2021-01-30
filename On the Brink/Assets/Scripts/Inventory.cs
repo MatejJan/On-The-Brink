@@ -18,6 +18,8 @@ public class Inventory : MonoBehaviour
 
     public InventoryUI inventoryUIScript;
 
+    public bool isActive;
+
     // Gets the number of found collectible items.
     public int FoundCount
     {
@@ -42,6 +44,8 @@ public class Inventory : MonoBehaviour
     // Start is called before the first frame update.
     void Start()
     {
+        isActive = false;
+
         // Getting all item prefabs from the resources folder.
         allItemTypes = Resources.LoadAll("Collectible Items");
 
@@ -51,9 +55,23 @@ public class Inventory : MonoBehaviour
             inventoryItems[itemType] = new ItemData();
         }
 
-        Debug.Log("Inventory start");
-
         GameObject.Find("Canvas").transform.Find("Inventory UI").GetComponent<InventoryUI>().Initialize();
+    }
+
+    private void Update()
+    {
+        // If the player press 'I' on the keyboard, the inventory opens or close.
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (isActive)
+            {
+                inventoryUIScript.DisableUI();
+            }
+            else if (!isActive)
+            {
+                inventoryUIScript.EnableUI();
+            }
+        }
     }
 
     // Add item to inventory and mark it as found.
@@ -89,6 +107,7 @@ public class Inventory : MonoBehaviour
         RefreshItem(itemType);
     }
 
+    // Update information about an item.
     private void RefreshItem(GameObject itemType)
     {
         inventoryUIScript.RefreshItem(itemType, inventoryItems[itemType]);
