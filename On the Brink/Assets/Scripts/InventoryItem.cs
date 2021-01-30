@@ -15,10 +15,12 @@ public class InventoryItem : MonoBehaviour
 
     private bool found;
 
+    public Workbench workbenchScript;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        workbenchScript = GameObject.Find("WorkbenchItem").GetComponent<Workbench>();
     }
 
     // Update is called once per frame
@@ -94,5 +96,11 @@ public class InventoryItem : MonoBehaviour
     public void HideToolTip()
     {
         transform.Find("Tool Tip").gameObject.SetActive(false);
+    }
+
+    public void PlaceItem()
+    {
+        workbenchScript.PlaceItem(transform.gameObject);
+        Debug.Log("Click");
     }
 }

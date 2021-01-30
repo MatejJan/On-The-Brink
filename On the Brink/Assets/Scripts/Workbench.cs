@@ -8,6 +8,8 @@ public class Workbench : MonoBehaviour
     public bool active;
     GameObject[] workbenchSlot = new GameObject[2];
 
+    public WorkbenchItem workbenchItemScript;
+
     // Start is called before the first frame update
     void Start()
     {
