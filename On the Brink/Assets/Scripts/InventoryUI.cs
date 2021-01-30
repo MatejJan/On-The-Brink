@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
@@ -9,7 +10,7 @@ public class InventoryUI : MonoBehaviour
 
     public GameObject inventoryItemPrefab;
 
-    private Dictionary<GameObject, GameObject> inventoryItems = new Dictionary<GameObject, GameObject>();
+    private Dictionary<string, GameObject> inventoryItems = new Dictionary<string, GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -54,17 +55,18 @@ public class InventoryUI : MonoBehaviour
         int slotSize = 31;
 
         // Instantiate a slot for all item types.
-        foreach (GameObject itemType in inventoryScript.inventoryItems.Keys)
+        foreach (GameObject itemTypePrefab in inventoryScript.allItemTypePrefabs)
         {
             GameObject newInventoryItem = Instantiate(inventoryItemPrefab, itemsTransform.localPosition + position, inventoryItemPrefab.transform.rotation, itemsTransform);
 
             // Change the position to a position relative to the parent.
             newInventoryItem.transform.localPosition = position;
 
+            string itemType = itemTypePrefab.GetComponent<CollectibleItem>().name;
             inventoryItems[itemType] = newInventoryItem;
 
             // Get the correct information to the item at this slot.
-            newInventoryItem.GetComponent<InventoryItem>().SetItemType(itemType);
+            newInventoryItem.GetComponent<InventoryItem>().SetItemType(itemTypePrefab);
 
             // Next item.
             index++;
@@ -84,7 +86,7 @@ public class InventoryUI : MonoBehaviour
     }
 
     // Update the information about an item.
-    public void RefreshItem(GameObject itemType, ItemData itemData)
+    public void RefreshItem(string itemType, ItemData itemData)
     {
         inventoryItems[itemType].GetComponent<InventoryItem>().Refresh(itemData);
     }
