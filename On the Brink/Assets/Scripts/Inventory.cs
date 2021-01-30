@@ -1,42 +1,99 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 // Information stored about all collectible items. If it has been found at least ones and how many there is in the inventory.
 public class ItemData
 {
-    public bool found = false;
-    public int count = 0;
+    public bool Found { get; set; }
+    public int Count { get; set; }
 }
 
 public class Inventory : MonoBehaviour
 {
-    Dictionary<GameObject, ItemData> inventoryItems = new Dictionary<GameObject, ItemData>();
+    public Dictionary<string, ItemData> inventoryItems = new Dictionary<string, ItemData>();
+
+    public List<GameObject> allItemTypePrefabs = new List<GameObject>();
+    public List<string> allItemTypes = new List<string>();
+
+    public InventoryUI inventoryUIScript;
+
+    public bool isActive;
+
+    // Gets the number of found collectible items.
+    public int FoundCount
+    {
+        get
+        {
+            int count = 0;
+
+            // Goes through the inventory dictionary and count how many items are found.
+            foreach (KeyValuePair<string, ItemData> item in inventoryItems)
+            {
+                if (item.Value.Found)
+                {
+                    count++;
+                }
+            }
+
+            // Returns the number of found items.
+            return count;
+        }
+    }
 
     // Start is called before the first frame update.
     void Start()
     {
+        isActive = false;
+
         // Getting all item prefabs from the resources folder.
-        var allItemTypes = Resources.LoadAll("Collectible Items");
+        Object[] allItemTypePrefabObjects = Resources.LoadAll("Collectible Items");
 
         // Create ItemData objects for every item prefab.
-        foreach (GameObject itemType in allItemTypes)
+        foreach (GameObject itemTypePrefab in allItemTypePrefabObjects)
         {
+            string itemType = itemTypePrefab.GetComponent<CollectibleItem>().name;
             inventoryItems[itemType] = new ItemData();
+            allItemTypePrefabs.Add(itemTypePrefab);
+            allItemTypes.Add(itemType);
+        }
+
+        GameObject.Find("Canvas").transform.Find("Inventory UI").GetComponent<InventoryUI>().Initialize();
+    }
+
+    private void Update()
+    {
+        // If the player press 'I' on the keyboard, the inventory opens or close.
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (isActive)
+            {
+                inventoryUIScript.DisableUI();
+            }
+            else if (!isActive)
+            {
+                inventoryUIScript.EnableUI();
+            }
         }
     }
 
     // Add item to inventory and mark it as found.
-    void AddItem(GameObject itemType)
+    public void AddItem(string itemType)
     {
         var itemData = inventoryItems[itemType];
-        itemData.found = true;
-        itemData.count++;
+        itemData.Found = true;
+        itemData.Count++;
+
+        RefreshItem(itemType);
+    }
+
+    public void AddItem(GameObject itemTypePrefab) 
+    {
+        AddItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
     }
 
     // Remove and add the correct items after aplying a recipe.
-    void ApplyRecipe(GameObject recipeVariant)
+    public void ApplyRecipe(GameObject recipeVariant)
     {
         // Get ingredients (the two items we are combining) and the resulting item from the recipe prefab.
         Recipe recipeVariantScript = recipeVariant.GetComponent<Recipe>();
@@ -50,9 +107,22 @@ public class Inventory : MonoBehaviour
     }
 
     // Removing item from inventory.
-    void RemoveItem(GameObject itemType)
+    public void RemoveItem(string itemType)
     {
         var itemData = inventoryItems[itemType];
-        itemData.count--;
+        itemData.Count--;
+
+        RefreshItem(itemType);
+    }
+
+    public void RemoveItem(GameObject itemTypePrefab) 
+    {
+        RemoveItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
+    }
+
+    // Update information about an item.
+    private void RefreshItem(string itemType)
+    {
+        inventoryUIScript.RefreshItem(itemType, inventoryItems[itemType]);
     }
 }

@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Movement.unity
+    path: Assets/Scenes/movement.unity
     guid: 198d09fe92087b141bca09703d94c181
   - enabled: 1
     path: Assets/Scenes/JumpToScene.unity
