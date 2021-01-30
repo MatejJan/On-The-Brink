@@ -53,12 +53,12 @@ PrefabInstance:
     - target: {fileID: 1009613111637091537, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
       propertyPath: name
-      value: Stone
+      value: Bottle Head
       objectReference: {fileID: 0}
     - target: {fileID: 1512977261259860075, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
       propertyPath: m_Name
-      value: CI_Stone
+      value: CI_BottleHead
       objectReference: {fileID: 0}
     - target: {fileID: 2607526162179841956, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
