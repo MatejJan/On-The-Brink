@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class InventoryItem : MonoBehaviour
 {
-    private GameObject itemType;
+    private GameObject itemTypePrefab;
 
     public Image iconImage;
     public TextMeshProUGUI countText;
@@ -28,11 +28,11 @@ public class InventoryItem : MonoBehaviour
     }
 
     // Sets the information about the item in this spot.
-    public void SetItemType(GameObject itemType)
+    public void SetItemType(GameObject itemTypePrefab)
     {
-        this.itemType = itemType;
+        this.itemTypePrefab = itemTypePrefab;
 
-        var collectibleItem = itemType.GetComponent<CollectibleItem>();
+        var collectibleItem = itemTypePrefab.GetComponent<CollectibleItem>();
 
         debugNameText.SetText(collectibleItem.name);
 
