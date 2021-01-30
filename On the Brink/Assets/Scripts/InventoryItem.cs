@@ -13,6 +13,7 @@ public class InventoryItem : MonoBehaviour
     public TextMeshProUGUI countText;
     public TextMeshProUGUI debugNameText;
     public Image image;
+    public TextMeshProUGUI toolTipText;
 
     private bool found;
 
@@ -39,8 +40,7 @@ public class InventoryItem : MonoBehaviour
 
         debugNameText.SetText(collectibleItem.name);
 
-        countText.SetText("x" + inventoryScript.inventoryItems[itemType].Count);
-        found = inventoryScript.inventoryItems[itemType].Found;
+        toolTipText.SetText(collectibleItem.name);
 
     }
 
