@@ -84,11 +84,35 @@ public class Workbench : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.O))
         {
             DestroySlot1();
+            if (workbenchSlot[1] != null)
+            {
+                CheckForRecipes(workbenchSlot[1]);
+            }
+
+            if (workbenchSlot[0] == null && workbenchSlot[1] == null)
+            {
+                foreach (string itemTypeKey in inventoryScript.itemTypePrefabs.Keys)
+                {
+                    inventoryScript.RemoveHighlight(itemTypeKey);
+                }
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.P))
         {
             DestroySlot2();
+            if (workbenchSlot[0] != null)
+            {
+                CheckForRecipes(workbenchSlot[0]);
+            }
+
+            if (workbenchSlot[0] == null && workbenchSlot[1] == null)
+            {
+                foreach (string itemTypeKey in inventoryScript.itemTypePrefabs.Keys)
+                {
+                    inventoryScript.RemoveHighlight(itemTypeKey);
+                }
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.C) && canCraft)
@@ -101,6 +125,7 @@ public class Workbench : MonoBehaviour
 
     }
 
+    // Put an instance of an item at one of the two workbench slots.
     public void PlaceItem(string itemType)
     {
         if (active)
@@ -130,9 +155,15 @@ public class Workbench : MonoBehaviour
         if (workbenchSlot[0] != null && workbenchSlot[1] != null)
         {
             Craftable(workbenchSlot[0], workbenchSlot[1]);
+
+            foreach (string itemTypeKey in inventoryScript.itemTypePrefabs.Keys)
+            {
+                inventoryScript.RemoveHighlight(itemTypeKey);
+            }
         }
     }
 
+    // Remove an item from the correct spot on the workbench.
     public void RemoveItem(string itemType)
     {
         if (workbenchSlot[0] == itemType)
@@ -145,7 +176,7 @@ public class Workbench : MonoBehaviour
         }
     }
 
-    // Goes through all recipes and check wich ones contain this ingredient.
+    // Goes through all recipes and creates a list (of arrays with two items in each array) with all items that can be combined with this item, and what result they produce.
     public void CheckForRecipes(string itemType)
     {
         GameObject ingredient = inventoryScript.itemTypePrefabs[itemType];
@@ -160,7 +191,7 @@ public class Workbench : MonoBehaviour
         HighlightSecondIngredient(secondIngredientAndResult);
     }
 
-    // Highlight the second ingredient that work with this ingredient.
+    // Highlights every ingredient (the first item in every array in the list) that can be combined with the current ingredient.
     public void HighlightSecondIngredient(List<GameObject[]> secondIngredientAndResult)
     {
         foreach (GameObject[] recipe in secondIngredientAndResult)
@@ -169,6 +200,7 @@ public class Workbench : MonoBehaviour
         }
     }
 
+    // Checks if the two items on the workbench can be combined or not.
     public void Craftable(string itemSlot1, string itemSlot2)
     {
         GameObject ingredientOne = inventoryScript.itemTypePrefabs[itemSlot1];
@@ -197,13 +229,16 @@ public class Workbench : MonoBehaviour
         }
     }
 
+    // Combines two items //TODO Remove the two items from the inventory, add the new item to the inventory.
     public void Craft(string itemType)
     {
         DestroySlot1();
         DestroySlot2();
         PlaceItem(itemType);
+        inventoryScript.AddItem(itemType);
     }
 
+    // Activate the workbench, display it.
     public void Activate()
     {
         inventoryUIScript.EnableUI();
@@ -212,11 +247,11 @@ public class Workbench : MonoBehaviour
         active = true;
     }
 
+    // Closes the workbench UI and clears the slots.
     public void Deactivate()
     {
-        workbenchSlot[0] = null;
-        workbenchSlot[1] = null;
-        ClearSlots();
+        DestroySlot1();
+        DestroySlot2();
         inventoryScript.isActive = false;
         inventoryUIScript.gameObject.SetActive(false);
         transform.Find("WorkbenchItem").gameObject.SetActive(false);
@@ -225,6 +260,7 @@ public class Workbench : MonoBehaviour
         transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
     }
 
+    // Not sure I need this one.
     public void ClearSlots()
     {
         if (transform.Find("WorkbenchItem").Find("Slot1").childCount > 0)
@@ -243,6 +279,7 @@ public class Workbench : MonoBehaviour
         }
     }
 
+    // Completely clears what is in slot 1 on the workbench.
     public void DestroySlot1()
     {
         if (transform.Find("WorkbenchItem").Find("Slot1").childCount > 0)
@@ -260,6 +297,7 @@ public class Workbench : MonoBehaviour
         transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
     }
 
+    // Completely clears what is in slot 2 on the workbench.
     public void DestroySlot2()
     {
         if (transform.Find("WorkbenchItem").Find("Slot2").childCount > 0)

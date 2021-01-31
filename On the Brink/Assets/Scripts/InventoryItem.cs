@@ -116,6 +116,5 @@ public class InventoryItem : MonoBehaviour
     public void PlaceItem()
     {
         workbenchScript.PlaceItem(itemType);
-        Debug.Log("Click");
     }
 }
