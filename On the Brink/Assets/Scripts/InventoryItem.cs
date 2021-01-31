@@ -15,7 +15,10 @@ public class InventoryItem : MonoBehaviour
     public TextMeshProUGUI debugNameText;
     public TextMeshProUGUI toolTipText;
 
+    public RectTransform toolTipBackground;
+
     private bool found;
+    private int count;
 
     public Workbench workbenchScript;
 
@@ -44,12 +47,17 @@ public class InventoryItem : MonoBehaviour
         debugNameText.SetText(collectibleItem.name);
 
         toolTipText.SetText(collectibleItem.name);
+
+        float textPaddingSize = 2f;
+        Vector2 toolTipBackgroundSize = new Vector2(toolTipText.preferredWidth + textPaddingSize * 2, toolTipText.preferredHeight + textPaddingSize);
+        toolTipBackground.sizeDelta = toolTipBackgroundSize;
     }
 
     // Update the information about the item in this slot.
     public void Refresh(ItemData itemData)
     {
         countText.SetText(itemData.Count + "");
+        count = itemData.Count;
 
         // If there is no items of this type in the inventory don't show the item count.
         if (itemData.Count < 1)
@@ -93,18 +101,21 @@ public class InventoryItem : MonoBehaviour
         bool highlight = itemData.Highlight;
         if (highlight)
         {
-            transform.Find("Background").GetComponent<Image>().color = Color.green;
+            transform.Find("Background").GetComponent<Image>().gameObject.SetActive(true);
         }
         else
         {
-            transform.Find("Background").GetComponent<Image>().color = defaultBackgroundColor;
+            transform.Find("Background").GetComponent<Image>().gameObject.SetActive(false);
         }
     }
 
     // When the mouse is over the item show the tool tip, the name of the item.
     public void ShowToolTip()
     {
-        transform.Find("Tool Tip").gameObject.SetActive(true);
+        if (found)
+        {
+            transform.Find("Tool Tip").gameObject.SetActive(true);
+        }
     }
 
     // When the mouse is no longer over the item, hide the tool tip.
@@ -115,6 +126,9 @@ public class InventoryItem : MonoBehaviour
 
     public void PlaceItem()
     {
-        workbenchScript.PlaceItem(itemType);
+        if (count > 0)
+        {
+            workbenchScript.PlaceItem(itemType);
+        }
     }
 }
