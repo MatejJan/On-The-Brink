@@ -11,7 +11,6 @@ public class RecipeData
 
 public class Workbench : MonoBehaviour
 {
-    //public Dictionary<string, RecipeData> recipesNO = new Dictionary<string, RecipeData>();
     public GameObject[,] recipes;
 
     public bool active;
@@ -23,6 +22,10 @@ public class Workbench : MonoBehaviour
     CollectibleItem collectibleItem;
 
     Vector3 inventoryPosition;
+    Vector3 hammerPosition;
+
+    bool canCraft;
+    string craftThis;
 
     // Start is called before the first frame update
     void Start()
@@ -88,6 +91,14 @@ public class Workbench : MonoBehaviour
             DestroySlot2();
         }
 
+        if (Input.GetKeyDown(KeyCode.C) && canCraft)
+        {
+            Craft(craftThis);
+            Debug.Log("Craft it!");
+            canCraft = false;
+            transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
+        }
+
     }
 
     public void PlaceItem(string itemType)
@@ -114,6 +125,11 @@ public class Workbench : MonoBehaviour
             }
             var itemTypePrefab = inventoryScript.itemTypePrefabs[itemType];
             Instantiate(itemTypePrefab, parentSlot);
+        }
+
+        if (workbenchSlot[0] != null && workbenchSlot[1] != null)
+        {
+            Craftable(workbenchSlot[0], workbenchSlot[1]);
         }
     }
 
@@ -164,27 +180,27 @@ public class Workbench : MonoBehaviour
                 if (recipes[mainIngredient, 1] == ingredientTwo)
                 {
                     string resultItemType = recipes[mainIngredient, 2].GetComponent<CollectibleItem>().name;
-                    if (Input.GetKeyDown(KeyCode.C))
-                    {
-                        Craft(resultItemType);
-                    }
+                    transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(true);
+                    Debug.Log("Craftable!");
+                    canCraft = true;
+                    craftThis = resultItemType;
                 }
+                else
+                {
+                    canCraft = false;
+                }
+            }
+            else
+            {
+                canCraft = false;
             }
         }
     }
 
     public void Craft(string itemType)
     {
-        GameObject ingredientOne = inventoryScript.itemTypePrefabs[itemType];
-        for (int mainIngredient = 0; mainIngredient < recipes.Length / 3; mainIngredient++)
-        {
-            if (recipes[mainIngredient, 0] == ingredientOne)
-            {
-
-            }
-        }
-        RemoveItem(workbenchSlot[0]);
-        RemoveItem(workbenchSlot[1]);
+        DestroySlot1();
+        DestroySlot2();
         PlaceItem(itemType);
     }
 
@@ -206,6 +222,7 @@ public class Workbench : MonoBehaviour
         transform.Find("WorkbenchItem").gameObject.SetActive(false);
         inventoryUIScript.transform.position = inventoryPosition;
         active = false;
+        transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
     }
 
     public void ClearSlots()
@@ -239,6 +256,8 @@ public class Workbench : MonoBehaviour
         {
             inventoryScript.RemoveHighlight(itemType);
         }
+
+        transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
     }
 
     public void DestroySlot2()
@@ -249,5 +268,7 @@ public class Workbench : MonoBehaviour
         }
 
         workbenchSlot[1] = null;
+
+        transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
     }
 }
