@@ -8,6 +8,7 @@ public class InventoryItem : MonoBehaviour
 {
     private GameObject itemTypePrefab;
     private string itemType;
+    private Color defaultBackgroundColor;
 
     public Image iconImage;
     public TextMeshProUGUI countText;
@@ -22,6 +23,7 @@ public class InventoryItem : MonoBehaviour
     void Start()
     {
         workbenchScript = GameObject.Find("Workbench").GetComponent<Workbench>();
+        defaultBackgroundColor = transform.Find("Background").GetComponent<Image>().color;
     }
 
     // Update is called once per frame
@@ -86,6 +88,16 @@ public class InventoryItem : MonoBehaviour
 
                 transform.Find("Icon").GetComponent<Image>().color = colorAlpha;
             }
+        }
+
+        bool highlight = itemData.Highlight;
+        if (highlight)
+        {
+            transform.Find("Background").GetComponent<Image>().color = Color.green;
+        }
+        else
+        {
+            transform.Find("Background").GetComponent<Image>().color = defaultBackgroundColor;
         }
     }
 

@@ -7,6 +7,7 @@ public class ItemData
 {
     public bool Found { get; set; }
     public int Count { get; set; }
+    public bool Highlight { get; set; }
 }
 
 public class Inventory : MonoBehaviour
@@ -20,6 +21,8 @@ public class Inventory : MonoBehaviour
     public Workbench workbenchScript;
 
     public bool isActive;
+
+    public Object[] allItemTypePrefabObjects;
 
     // Gets the number of found collectible items.
     public int FoundCount
@@ -48,7 +51,7 @@ public class Inventory : MonoBehaviour
         isActive = false;
 
         // Getting all item prefabs from the resources folder.
-        Object[] allItemTypePrefabObjects = Resources.LoadAll("Collectible Items");
+        allItemTypePrefabObjects = Resources.LoadAll("Collectible Items");
 
         // Create ItemData objects for every item prefab.
         foreach (GameObject itemTypePrefab in allItemTypePrefabObjects)
@@ -93,6 +96,20 @@ public class Inventory : MonoBehaviour
         AddItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
     }
 
+    public void HighlightItem(string itemType)
+    {
+        var itemData = inventoryItems[itemType];
+        itemData.Highlight = true;
+        RefreshItem(itemType);
+    }
+
+    public void RemoveHighlight(string itemType)
+    {
+        var itemData = inventoryItems[itemType];
+        itemData.Highlight = false;
+        RefreshItem(itemType);
+    }
+
     // Remove and add the correct items after aplying a recipe.
     public void ApplyRecipe(GameObject recipeVariant)
     {
@@ -122,8 +139,22 @@ public class Inventory : MonoBehaviour
     }
 
     // Update information about an item.
-    private void RefreshItem(string itemType)
+    public void RefreshItem(string itemType)
     {
         inventoryUIScript.RefreshItem(itemType, inventoryItems[itemType]);
+    }
+
+    public bool HaveItem(string itemType)
+    {
+        if (inventoryItems[itemType].Count > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool HaveItem(GameObject itemTypePrefab)
+    {
+        return HaveItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
     }
 }
