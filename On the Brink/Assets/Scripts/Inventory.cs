@@ -13,10 +13,11 @@ public class Inventory : MonoBehaviour
 {
     public Dictionary<string, ItemData> inventoryItems = new Dictionary<string, ItemData>();
 
-    public List<GameObject> allItemTypePrefabs = new List<GameObject>();
-    public List<string> allItemTypes = new List<string>();
+    public Dictionary<string, GameObject> itemTypePrefabs = new Dictionary<string, GameObject>();
 
     public InventoryUI inventoryUIScript;
+
+    public Workbench workbenchScript;
 
     public bool isActive;
 
@@ -54,8 +55,7 @@ public class Inventory : MonoBehaviour
         {
             string itemType = itemTypePrefab.GetComponent<CollectibleItem>().name;
             inventoryItems[itemType] = new ItemData();
-            allItemTypePrefabs.Add(itemTypePrefab);
-            allItemTypes.Add(itemType);
+            itemTypePrefabs[itemType] = itemTypePrefab;
         }
 
         GameObject.Find("Canvas").transform.Find("Inventory UI").GetComponent<InventoryUI>().Initialize();
@@ -66,11 +66,12 @@ public class Inventory : MonoBehaviour
         // If the player press 'I' on the keyboard, the inventory opens or close.
         if (Input.GetKeyDown(KeyCode.I))
         {
-            if (isActive)
+            if (isActive || workbenchScript.active)
             {
                 inventoryUIScript.DisableUI();
+                workbenchScript.Deactivate();
             }
-            else if (!isActive)
+            else if (!isActive && !workbenchScript.active)
             {
                 inventoryUIScript.EnableUI();
             }
@@ -87,7 +88,7 @@ public class Inventory : MonoBehaviour
         RefreshItem(itemType);
     }
 
-    public void AddItem(GameObject itemTypePrefab) 
+    public void AddItem(GameObject itemTypePrefab)
     {
         AddItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
     }
@@ -115,7 +116,7 @@ public class Inventory : MonoBehaviour
         RefreshItem(itemType);
     }
 
-    public void RemoveItem(GameObject itemTypePrefab) 
+    public void RemoveItem(GameObject itemTypePrefab)
     {
         RemoveItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
     }

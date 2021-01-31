@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class InventoryItem : MonoBehaviour
 {
     private GameObject itemTypePrefab;
+    private string itemType;
 
     public Image iconImage;
     public TextMeshProUGUI countText;
@@ -20,7 +21,7 @@ public class InventoryItem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        workbenchScript = GameObject.Find("WorkbenchItem").GetComponent<Workbench>();
+        workbenchScript = GameObject.Find("Workbench").GetComponent<Workbench>();
     }
 
     // Update is called once per frame
@@ -35,6 +36,8 @@ public class InventoryItem : MonoBehaviour
         this.itemTypePrefab = itemTypePrefab;
 
         var collectibleItem = itemTypePrefab.GetComponent<CollectibleItem>();
+
+        itemType = collectibleItem.name;
 
         debugNameText.SetText(collectibleItem.name);
 
@@ -100,7 +103,7 @@ public class InventoryItem : MonoBehaviour
 
     public void PlaceItem()
     {
-        workbenchScript.PlaceItem(transform.gameObject);
+        workbenchScript.PlaceItem(itemType);
         Debug.Log("Click");
     }
 }
