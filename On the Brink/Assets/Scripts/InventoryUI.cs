@@ -36,6 +36,8 @@ public class InventoryUI : MonoBehaviour
     {
         inventoryScript.isActive = false;
         gameObject.SetActive(false);
+        //GameObject.Find("Workbench").transform.Find("WorkbenchItem").gameObject.SetActive(false);
+        GameObject.Find("Workbench").GetComponent<Workbench>().Deactivate();
     }
 
     // Creates slots in the inventory for all items.
@@ -55,7 +57,7 @@ public class InventoryUI : MonoBehaviour
         int slotSize = 31;
 
         // Instantiate a slot for all item types.
-        foreach (GameObject itemTypePrefab in inventoryScript.allItemTypePrefabs)
+        foreach (GameObject itemTypePrefab in inventoryScript.itemTypePrefabs.Values)
         {
             GameObject newInventoryItem = Instantiate(inventoryItemPrefab, itemsTransform.localPosition + position, inventoryItemPrefab.transform.rotation, itemsTransform);
 

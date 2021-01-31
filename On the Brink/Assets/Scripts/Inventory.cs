@@ -7,18 +7,22 @@ public class ItemData
 {
     public bool Found { get; set; }
     public int Count { get; set; }
+    public bool Highlight { get; set; }
 }
 
 public class Inventory : MonoBehaviour
 {
     public Dictionary<string, ItemData> inventoryItems = new Dictionary<string, ItemData>();
 
-    public List<GameObject> allItemTypePrefabs = new List<GameObject>();
-    public List<string> allItemTypes = new List<string>();
+    public Dictionary<string, GameObject> itemTypePrefabs = new Dictionary<string, GameObject>();
 
     public InventoryUI inventoryUIScript;
 
+    public Workbench workbenchScript;
+
     public bool isActive;
+
+    public Object[] allItemTypePrefabObjects;
 
     // Gets the number of found collectible items.
     public int FoundCount
@@ -47,15 +51,14 @@ public class Inventory : MonoBehaviour
         isActive = false;
 
         // Getting all item prefabs from the resources folder.
-        Object[] allItemTypePrefabObjects = Resources.LoadAll("Collectible Items");
+        allItemTypePrefabObjects = Resources.LoadAll("Collectible Items");
 
         // Create ItemData objects for every item prefab.
         foreach (GameObject itemTypePrefab in allItemTypePrefabObjects)
         {
             string itemType = itemTypePrefab.GetComponent<CollectibleItem>().name;
             inventoryItems[itemType] = new ItemData();
-            allItemTypePrefabs.Add(itemTypePrefab);
-            allItemTypes.Add(itemType);
+            itemTypePrefabs[itemType] = itemTypePrefab;
         }
 
         GameObject.Find("Canvas").transform.Find("Inventory UI").GetComponent<InventoryUI>().Initialize();
@@ -66,11 +69,12 @@ public class Inventory : MonoBehaviour
         // If the player press 'I' on the keyboard, the inventory opens or close.
         if (Input.GetKeyDown(KeyCode.I))
         {
-            if (isActive)
+            if (isActive || workbenchScript.active)
             {
                 inventoryUIScript.DisableUI();
+                workbenchScript.Deactivate();
             }
-            else if (!isActive)
+            else if (!isActive && !workbenchScript.active)
             {
                 inventoryUIScript.EnableUI();
             }
@@ -87,9 +91,23 @@ public class Inventory : MonoBehaviour
         RefreshItem(itemType);
     }
 
-    public void AddItem(GameObject itemTypePrefab) 
+    public void AddItem(GameObject itemTypePrefab)
     {
         AddItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
+    }
+
+    public void HighlightItem(string itemType)
+    {
+        var itemData = inventoryItems[itemType];
+        itemData.Highlight = true;
+        RefreshItem(itemType);
+    }
+
+    public void RemoveHighlight(string itemType)
+    {
+        var itemData = inventoryItems[itemType];
+        itemData.Highlight = false;
+        RefreshItem(itemType);
     }
 
     // Remove and add the correct items after aplying a recipe.
@@ -115,14 +133,28 @@ public class Inventory : MonoBehaviour
         RefreshItem(itemType);
     }
 
-    public void RemoveItem(GameObject itemTypePrefab) 
+    public void RemoveItem(GameObject itemTypePrefab)
     {
         RemoveItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
     }
 
     // Update information about an item.
-    private void RefreshItem(string itemType)
+    public void RefreshItem(string itemType)
     {
         inventoryUIScript.RefreshItem(itemType, inventoryItems[itemType]);
+    }
+
+    public bool HaveItem(string itemType)
+    {
+        if (inventoryItems[itemType].Count > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool HaveItem(GameObject itemTypePrefab)
+    {
+        return HaveItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
     }
 }
