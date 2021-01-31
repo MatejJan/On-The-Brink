@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class InventoryItem : MonoBehaviour
 {
     private GameObject itemTypePrefab;
+    private string itemType;
+    private Color defaultBackgroundColor;
 
     public Image iconImage;
     public TextMeshProUGUI countText;
@@ -15,10 +17,13 @@ public class InventoryItem : MonoBehaviour
 
     private bool found;
 
+    public Workbench workbenchScript;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        workbenchScript = GameObject.Find("Workbench").GetComponent<Workbench>();
+        defaultBackgroundColor = transform.Find("Background").GetComponent<Image>().color;
     }
 
     // Update is called once per frame
@@ -33,6 +38,8 @@ public class InventoryItem : MonoBehaviour
         this.itemTypePrefab = itemTypePrefab;
 
         var collectibleItem = itemTypePrefab.GetComponent<CollectibleItem>();
+
+        itemType = collectibleItem.name;
 
         debugNameText.SetText(collectibleItem.name);
 
@@ -82,6 +89,16 @@ public class InventoryItem : MonoBehaviour
                 transform.Find("Icon").GetComponent<Image>().color = colorAlpha;
             }
         }
+
+        bool highlight = itemData.Highlight;
+        if (highlight)
+        {
+            transform.Find("Background").GetComponent<Image>().color = Color.green;
+        }
+        else
+        {
+            transform.Find("Background").GetComponent<Image>().color = defaultBackgroundColor;
+        }
     }
 
     // When the mouse is over the item show the tool tip, the name of the item.
@@ -94,5 +111,11 @@ public class InventoryItem : MonoBehaviour
     public void HideToolTip()
     {
         transform.Find("Tool Tip").gameObject.SetActive(false);
+    }
+
+    public void PlaceItem()
+    {
+        workbenchScript.PlaceItem(itemType);
+        Debug.Log("Click");
     }
 }
