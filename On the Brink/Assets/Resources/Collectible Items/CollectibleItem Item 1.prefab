@@ -16,11 +16,12 @@ PrefabInstance:
         type: 3}
       propertyPath: icon
       value: 
-      objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+      objectReference: {fileID: 21300000, guid: 14ba1cfa7d813634cb5d5780ddd4746f,
+        type: 3}
     - target: {fileID: 1512977261259860075, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
       propertyPath: m_Name
-      value: CollectibleItem Variant
+      value: CollectibleItem Item 1
       objectReference: {fileID: 0}
     - target: {fileID: 2657300776989958024, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
