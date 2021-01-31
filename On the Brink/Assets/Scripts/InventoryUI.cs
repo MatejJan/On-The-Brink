@@ -36,7 +36,6 @@ public class InventoryUI : MonoBehaviour
     {
         inventoryScript.isActive = false;
         gameObject.SetActive(false);
-        //GameObject.Find("Workbench").transform.Find("WorkbenchItem").gameObject.SetActive(false);
         GameObject.Find("Workbench").GetComponent<Workbench>().Deactivate();
     }
 
@@ -54,7 +53,7 @@ public class InventoryUI : MonoBehaviour
         // Veriables for keeping track of all slots and positions.
         int index = 0;
         int itemsPerRow = 10;
-        int slotSize = 31;
+        int slotSize = 30;
 
         // Instantiate a slot for all item types.
         foreach (GameObject itemTypePrefab in inventoryScript.itemTypePrefabs.Values)
