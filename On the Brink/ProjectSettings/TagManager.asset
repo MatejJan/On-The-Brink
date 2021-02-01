@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - CollectibleItem
+  - Interactable
   layers:
   - Default
   - TransparentFX

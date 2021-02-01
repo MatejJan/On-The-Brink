@@ -6,11 +6,13 @@ using UnityEngine.UI;
 
 public class InventoryItem : MonoBehaviour
 {
+    public Material haveMaterial;
+    public Material dontHaveMaterial;
+
     private GameObject itemTypePrefab;
     private string itemType;
     private Color defaultBackgroundColor;
 
-    public Image iconImage;
     public TextMeshProUGUI countText;
     public TextMeshProUGUI debugNameText;
     public TextMeshProUGUI toolTipText;
@@ -21,6 +23,9 @@ public class InventoryItem : MonoBehaviour
     private int count;
 
     public Workbench workbenchScript;
+
+    private GameObject silhouette;
+    private GameObject icon;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +48,7 @@ public class InventoryItem : MonoBehaviour
         var collectibleItem = itemTypePrefab.GetComponent<CollectibleItem>();
 
         itemType = collectibleItem.name;
+        gameObject.name = collectibleItem.name;
 
         debugNameText.SetText(collectibleItem.name);
 
@@ -51,6 +57,16 @@ public class InventoryItem : MonoBehaviour
         float textPaddingSize = 2f;
         Vector2 toolTipBackgroundSize = new Vector2(toolTipText.preferredWidth + textPaddingSize * 2, toolTipText.preferredHeight + textPaddingSize);
         toolTipBackground.sizeDelta = toolTipBackgroundSize;
+
+        Mesh mesh = itemTypePrefab.GetComponent<MeshFilter>().sharedMesh;
+
+        Transform iconScalarTransform = transform.Find("Icon area").Find("Icon scaler");
+
+        silhouette = iconScalarTransform.Find("Silhouette").gameObject;
+        icon = iconScalarTransform.Find("Icon").gameObject;
+
+        silhouette.GetComponent<MeshFilter>().mesh = mesh;
+        icon.GetComponent<MeshFilter>().mesh = mesh;
     }
 
     // Update the information about the item in this slot.
@@ -75,26 +91,17 @@ public class InventoryItem : MonoBehaviour
         // When an item is found hide the silhouette and show the icon instead.
         if (found)
         {
-            transform.Find("Silhouette").gameObject.SetActive(false);
-            transform.Find("Icon").gameObject.SetActive(true);
+            silhouette.SetActive(false);
+            icon.SetActive(true);
 
             // If there is any of this item type in the inventory show the icon.
             if (itemData.Count > 0)
             {
-                var colorAlpha = iconImage.color;
-                colorAlpha.a = 1f;
-                iconImage.color = colorAlpha;
-
-                transform.Find("Icon").GetComponent<Image>().color = colorAlpha;
+                icon.GetComponent<MeshRenderer>().material = haveMaterial;
             }
             else
             {
-                // If there is no items of this type make the icon transparent.
-                var colorAlpha = iconImage.color;
-                colorAlpha.a = 0.5f;
-                iconImage.color = colorAlpha;
-
-                transform.Find("Icon").GetComponent<Image>().color = colorAlpha;
+                icon.GetComponent<MeshRenderer>().material = dontHaveMaterial;
             }
         }
 

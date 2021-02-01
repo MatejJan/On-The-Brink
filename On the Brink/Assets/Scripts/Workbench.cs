@@ -16,8 +16,8 @@ public class Workbench : MonoBehaviour
     public bool active;
     string[] workbenchSlot = new string[2];
 
-    public Inventory inventoryScript;
-    public InventoryUI inventoryUIScript;
+    private Inventory inventoryScript;
+    private InventoryUI inventoryUIScript;
 
     CollectibleItem collectibleItem;
 
@@ -32,9 +32,12 @@ public class Workbench : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        inventoryScript = GameObject.Find("Inventory").GetComponent<Inventory>();
+        inventoryUIScript = GameObject.Find("Canvas").transform.Find("Inventory UI").gameObject.GetComponent<InventoryUI>();
+
         active = false;
-        inventoryPosition = inventoryUIScript.transform.position;
-        inventoryPositionOffset = new Vector3(0, 120, 0);
+        inventoryPosition = inventoryUIScript.transform.localPosition;
+        inventoryPositionOffset = new Vector3(0, 100, 0);
         canCraft = false;
 
         Object[] allRecipePrefabObjects = Resources.LoadAll("Recipes");
@@ -73,18 +76,6 @@ public class Workbench : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            if (active)
-            {
-                Deactivate();
-            }
-            else if (!active && !inventoryScript.isActive)
-            {
-                Activate();
-            }
-        }
-
         if (Input.GetKeyDown(KeyCode.O))
         {
             DestroySlot1();
@@ -271,9 +262,10 @@ public class Workbench : MonoBehaviour
     public void Activate()
     {
         inventoryUIScript.EnableUI();
-        transform.Find("WorkbenchItem").gameObject.SetActive(true);
+        transform.Find("Workbench Camera").gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.Find("WorkbenchUI").gameObject.SetActive(true);
-        inventoryUIScript.transform.position = inventoryPosition + inventoryPositionOffset;
+        GameObject.Find("Character renderer").GetComponent<MeshRenderer>().enabled = false;
+        inventoryUIScript.transform.localPosition = inventoryPosition + inventoryPositionOffset;
         active = true;
     }
 
@@ -284,9 +276,10 @@ public class Workbench : MonoBehaviour
         DestroySlot2();
         inventoryScript.isActive = false;
         inventoryUIScript.gameObject.SetActive(false);
-        transform.Find("WorkbenchItem").gameObject.SetActive(false);
+        transform.Find("Workbench Camera").gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.Find("WorkbenchUI").gameObject.SetActive(false);
-        inventoryUIScript.transform.position = inventoryPosition;
+        GameObject.Find("Character renderer").GetComponent<MeshRenderer>().enabled = true;
+        inventoryUIScript.transform.localPosition = inventoryPosition;
         active = false;
         //transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
         GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("Craft").gameObject.SetActive(false);

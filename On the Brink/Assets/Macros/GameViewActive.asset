@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1893448595, guid: a040fb66244a7f54289914d98ea4ef7d, type: 3}
+  m_Name: GameViewActive
+  m_EditorClassIdentifier: 
+  _data:
+    _json: '{"graph":{"variables":{"collection":{"$content":[],"$version":"A"},"$version":"A"},"controlInputDefinitions":[],"controlOutputDefinitions":[],"valueInputDefinitions":[],"valueOutputDefinitions":[{"_type":"System.Boolean","key":"Result","label":null,"summary":null,"hideLabel":true}],"title":"Game
+      view active","summary":null,"pan":{"x":0.0,"y":0.0},"zoom":1.0,"elements":[{"defaultValues":{},"position":{"x":148.0,"y":-25.0},"guid":"82870a24-5cf1-4e8c-84c6-e0a2106a45d7","$version":"A","$type":"Bolt.GraphOutput","$id":"10"},{"chainable":false,"member":{"name":"Find","parameterTypes":["System.String"],"targetType":"UnityEngine.GameObject","targetTypeName":"UnityEngine.GameObject","$version":"A"},"defaultValues":{"%name":{"$content":"Inventory","$type":"System.String"}},"position":{"x":-439.0,"y":-42.0},"guid":"0364df67-b96f-4891-b20e-480bb8996524","$version":"A","$type":"Bolt.InvokeMember","$id":"12"},{"member":{"name":"isActive","parameterTypes":null,"targetType":"Inventory","targetTypeName":"Inventory","$version":"A"},"defaultValues":{"target":null},"position":{"x":-223.0,"y":-24.0},"guid":"407823f6-7f32-49ad-a4d5-610450b0bb7c","$version":"A","$type":"Bolt.GetMember","$id":"15"},{"defaultValues":{},"position":{"x":-33.0,"y":-22.0},"guid":"d46dc629-66e2-4de4-983e-cab507f002f1","$version":"A","$type":"Bolt.Negate","$id":"18"},{"sourceUnit":{"$ref":"12"},"sourceKey":"result","destinationUnit":{"$ref":"15"},"destinationKey":"target","guid":"c15ee5d0-ab61-48bf-a001-ed055abec85d","$type":"Bolt.ValueConnection"},{"sourceUnit":{"$ref":"15"},"sourceKey":"value","destinationUnit":{"$ref":"18"},"destinationKey":"input","guid":"9b997a63-e1fd-4c49-910a-c48008b29b08","$type":"Bolt.ValueConnection"},{"sourceUnit":{"$ref":"18"},"sourceKey":"output","destinationUnit":{"$ref":"10"},"destinationKey":"Result","guid":"9844cff1-b7ac-4e05-9c5e-cdf10e86e26b","$type":"Bolt.ValueConnection"}],"$version":"A"}}'
+    _objectReferences: []

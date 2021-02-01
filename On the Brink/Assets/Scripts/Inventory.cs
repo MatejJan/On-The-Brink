@@ -18,8 +18,6 @@ public class Inventory : MonoBehaviour
 
     public InventoryUI inventoryUIScript;
 
-    public Workbench workbenchScript;
-
     public bool isActive;
 
     public Object[] allItemTypePrefabObjects;
@@ -69,14 +67,23 @@ public class Inventory : MonoBehaviour
         // If the player press 'I' on the keyboard, the inventory opens or close.
         if (Input.GetKeyDown(KeyCode.I))
         {
-            if (isActive || workbenchScript.active)
+            Workbench workbenchScript = GameObject.Find("Workbench")?.GetComponent<Workbench>();
+
+            if (workbenchScript)
             {
-                inventoryUIScript.DisableUI();
-                workbenchScript.Deactivate();
-            }
-            else if (!isActive && !workbenchScript.active)
-            {
-                inventoryUIScript.EnableUI();
+                if (isActive)
+                {
+                    inventoryUIScript.DisableUI();
+
+                    if (workbenchScript.active)
+                    {
+                        workbenchScript.Deactivate();
+                    }
+                }
+                else
+                {
+                    inventoryUIScript.EnableUI();
+                }
             }
         }
     }

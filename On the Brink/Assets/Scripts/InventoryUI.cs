@@ -36,7 +36,6 @@ public class InventoryUI : MonoBehaviour
     {
         inventoryScript.isActive = false;
         gameObject.SetActive(false);
-        GameObject.Find("Workbench").GetComponent<Workbench>().Deactivate();
     }
 
     // Creates slots in the inventory for all items.
