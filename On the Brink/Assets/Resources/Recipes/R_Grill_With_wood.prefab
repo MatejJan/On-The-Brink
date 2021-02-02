@@ -11,19 +11,19 @@ PrefabInstance:
         type: 3}
       propertyPath: ingredients.Array.data[0]
       value: 
-      objectReference: {fileID: 6175028579678468622, guid: ca6e4bcbcccaed74698f26e57f2cd48a,
+      objectReference: {fileID: 6175028579678468622, guid: fb4bd0d1d31e50648920105fc44e1913,
         type: 3}
     - target: {fileID: 1150382285641608737, guid: bc85a7f5b97c0459fa320934b3f9c4ce,
         type: 3}
       propertyPath: ingredients.Array.data[1]
       value: 
-      objectReference: {fileID: 6175028579678468622, guid: 21e7e8ea00c89464dbafc35e9e39df37,
+      objectReference: {fileID: 6175028579678468622, guid: 3f7535c1f8619c842a66f54d1cd650c1,
         type: 3}
     - target: {fileID: 1150382285641608737, guid: bc85a7f5b97c0459fa320934b3f9c4ce,
         type: 3}
       propertyPath: result
       value: 
-      objectReference: {fileID: 6175028579678468622, guid: 8a3b09bdc5e23c148b74595a2261f000,
+      objectReference: {fileID: 6175028579678468622, guid: ba1e427c91729b04281643c0a79e533a,
         type: 3}
     - target: {fileID: 3436972460504617777, guid: bc85a7f5b97c0459fa320934b3f9c4ce,
         type: 3}
@@ -83,7 +83,7 @@ PrefabInstance:
     - target: {fileID: 3828385982564968105, guid: bc85a7f5b97c0459fa320934b3f9c4ce,
         type: 3}
       propertyPath: m_Name
-      value: R_Chain
+      value: R_Grill_With_wood
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc85a7f5b97c0459fa320934b3f9c4ce, type: 3}
