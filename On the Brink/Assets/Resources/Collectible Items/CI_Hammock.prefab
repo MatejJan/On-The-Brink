@@ -53,18 +53,18 @@ PrefabInstance:
     - target: {fileID: 1009613111637091537, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
       propertyPath: name
-      value: Water Filter
+      value: Hammock
       objectReference: {fileID: 0}
     - target: {fileID: 1512977261259860075, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
       propertyPath: m_Name
-      value: CI_WaterFilter
+      value: CI_Hammock
       objectReference: {fileID: 0}
     - target: {fileID: 2607526162179841956, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 4300000, guid: 9a5f3050a366657498d166d0ac808a9b, type: 3}
+      objectReference: {fileID: 4300000, guid: 861c1a12fdfabb1428c3d360a919c168, type: 3}
     - target: {fileID: 2657300776989958024, guid: f05aef2eae87048378ee80b39c6b2f87,
         type: 3}
       propertyPath: m_LocalPosition.x
