@@ -22,7 +22,7 @@ public class Workbench : MonoBehaviour
     CollectibleItem collectibleItem;
 
     Vector3 inventoryPosition;
-    Vector3 inventoryPositionOffset;
+    Vector3 inventoryPositionOffset = new Vector3(0, 27.5f, 0);
 
     bool canCraft;
     string craftThis;
@@ -37,7 +37,6 @@ public class Workbench : MonoBehaviour
 
         active = false;
         inventoryPosition = inventoryUIScript.transform.localPosition;
-        inventoryPositionOffset = new Vector3(0, 100, 0);
         canCraft = false;
 
         Object[] allRecipePrefabObjects = Resources.LoadAll("Recipes");
@@ -262,8 +261,15 @@ public class Workbench : MonoBehaviour
     public void Activate()
     {
         inventoryUIScript.EnableUI();
-        transform.Find("Workbench Camera").gameObject.SetActive(true);
-        GameObject.Find("Canvas").transform.Find("WorkbenchUI").gameObject.SetActive(true);
+
+        var workbenchCamera = transform.Find("Workbench Camera").gameObject;
+        workbenchCamera.SetActive(true);
+        
+        var canvas = GameObject.Find("Canvas");
+        canvas.transform.Find("WorkbenchUI").gameObject.SetActive(true);
+
+        canvas.GetComponent<Canvas>().worldCamera = workbenchCamera.GetComponent<Camera>();
+
         GameObject.Find("Character renderer").GetComponent<MeshRenderer>().enabled = false;
         inventoryUIScript.transform.localPosition = inventoryPosition + inventoryPositionOffset;
         active = true;
@@ -277,7 +283,14 @@ public class Workbench : MonoBehaviour
         inventoryScript.isActive = false;
         inventoryUIScript.gameObject.SetActive(false);
         transform.Find("Workbench Camera").gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.Find("WorkbenchUI").gameObject.SetActive(false);
+
+        var canvas = GameObject.Find("Canvas");
+        canvas.transform.Find("WorkbenchUI").gameObject.SetActive(false);
+
+        canvas.transform.Find("WorkbenchUI").gameObject.SetActive(true);
+
+        canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Scene Camera").GetComponent<Camera>();
+
         GameObject.Find("Character renderer").GetComponent<MeshRenderer>().enabled = true;
         inventoryUIScript.transform.localPosition = inventoryPosition;
         active = false;
