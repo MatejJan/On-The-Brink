@@ -7,7 +7,6 @@ public class ItemData
 {
     public bool Found { get; set; }
     public int Count { get; set; }
-    public bool Highlight { get; set; }
 }
 
 public class Inventory : MonoBehaviour
@@ -67,23 +66,13 @@ public class Inventory : MonoBehaviour
         // If the player press 'I' on the keyboard, the inventory opens or close.
         if (Input.GetKeyDown(KeyCode.I))
         {
-            Workbench workbenchScript = GameObject.Find("Workbench")?.GetComponent<Workbench>();
-
-            if (workbenchScript)
+            if (isActive)
             {
-                if (isActive)
-                {
-                    inventoryUIScript.DisableUI();
-
-                    if (workbenchScript.active)
-                    {
-                        workbenchScript.Deactivate();
-                    }
-                }
-                else
-                {
-                    inventoryUIScript.EnableUI();
-                }
+                inventoryUIScript.DisableUI();
+            }
+            else
+            {
+                inventoryUIScript.EnableUI();
             }
         }
     }
@@ -103,18 +92,9 @@ public class Inventory : MonoBehaviour
         AddItem(itemTypePrefab.GetComponent<CollectibleItem>().name);
     }
 
-    public void HighlightItem(string itemType)
+    public void SetHighlightForItem(string itemType, bool highlight)
     {
-        var itemData = inventoryItems[itemType];
-        itemData.Highlight = true;
-        RefreshItem(itemType);
-    }
-
-    public void RemoveHighlight(string itemType)
-    {
-        var itemData = inventoryItems[itemType];
-        itemData.Highlight = false;
-        RefreshItem(itemType);
+        inventoryUIScript.SetHighlightForItem(itemType, highlight);
     }
 
     // Remove and add the correct items after aplying a recipe.

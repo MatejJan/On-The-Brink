@@ -11,23 +11,22 @@ public class RecipeData
 
 public class Workbench : MonoBehaviour
 {
-    public GameObject[,] recipes;
-
     public bool active;
-    string[] workbenchSlot = new string[2];
 
     private Inventory inventoryScript;
     private InventoryUI inventoryUIScript;
 
-    CollectibleItem collectibleItem;
+    private string[] workbenchSlot = new string[2];
 
-    Vector3 inventoryPosition;
-    Vector3 inventoryPositionOffset = new Vector3(0, 27.5f, 0);
+    private Dictionary<string, Dictionary<string, Recipe>> recipesForIngredients = new Dictionary<string, Dictionary<string, Recipe>>();
+    private Recipe activeRecipe = null;
 
-    bool canCraft;
-    string craftThis;
-    string useThisItem1;
-    string useThisItem2;
+    private Vector3 inventoryPosition;
+    private Vector3 inventoryPositionOffset = new Vector3(0, 27.5f, 0);
+    private static string GetCollectibleItemType(GameObject collectibleItem)
+    {
+        return collectibleItem.GetComponent<CollectibleItem>().name;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -37,39 +36,32 @@ public class Workbench : MonoBehaviour
 
         active = false;
         inventoryPosition = inventoryUIScript.transform.localPosition;
-        canCraft = false;
 
         Object[] allRecipePrefabObjects = Resources.LoadAll("Recipes");
 
-        recipes = new GameObject[allRecipePrefabObjects.Length * 2, 3];
-
-        int index = 0;
-
-        // Create an 2dimensional array with all ingredients and results.
+        // Create a map of recipe ingredients for fast retrieval.
         foreach (GameObject recipePrefab in allRecipePrefabObjects)
         {
-            for (int item = 0; item < 2; item++)
+            Recipe recipe = recipePrefab.GetComponent<Recipe>();
+
+            void placeRecipeInMap(GameObject ingredient1, GameObject ingredient2)
             {
-                // Ingredient 1.
-                GameObject recipeIngredient = recipePrefab.GetComponent<Recipe>().ingredients[item];
-                recipes[index, 0] = recipeIngredient;
+                string ingredient1Name = GetCollectibleItemType(ingredient1);
+                string ingredient2Name = GetCollectibleItemType(ingredient2);
 
-                // Ingredient 2.
-                if (item == 0)
+                if (!recipesForIngredients.ContainsKey(ingredient1Name))
                 {
-                    recipes[index, 1] = recipePrefab.GetComponent<Recipe>().ingredients[1];
+                    recipesForIngredients[ingredient1Name] = new Dictionary<string, Recipe>();
                 }
 
-                if (item == 1)
-                {
-                    recipes[index, 1] = recipePrefab.GetComponent<Recipe>().ingredients[0];
-                }
-
-                // Ingredient 3.
-                recipes[index, 2] = recipePrefab.GetComponent<Recipe>().result;
-                index++;
+                recipesForIngredients[ingredient1Name][ingredient2Name] = recipe;
             }
+
+            placeRecipeInMap(recipe.ingredients[0], recipe.ingredients[1]);
+            placeRecipeInMap(recipe.ingredients[1], recipe.ingredients[0]);
         }
+
+        HandleSlotsChanged();
     }
 
     // Update is called once per frame
@@ -77,92 +69,64 @@ public class Workbench : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.O))
         {
-            DestroySlot1();
-            if (workbenchSlot[1] != null)
-            {
-                CheckForRecipes(workbenchSlot[1]);
-            }
-
-            if (workbenchSlot[0] == null && workbenchSlot[1] == null)
-            {
-                foreach (string itemTypeKey in inventoryScript.itemTypePrefabs.Keys)
-                {
-                    inventoryScript.RemoveHighlight(itemTypeKey);
-                }
-            }
+            RemoveItem(workbenchSlot[0]);
         }
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-            DestroySlot2();
-            if (workbenchSlot[0] != null)
-            {
-                CheckForRecipes(workbenchSlot[0]);
-            }
-
-            if (workbenchSlot[0] == null && workbenchSlot[1] == null)
-            {
-                foreach (string itemTypeKey in inventoryScript.itemTypePrefabs.Keys)
-                {
-                    inventoryScript.RemoveHighlight(itemTypeKey);
-                }
-            }
+            RemoveItem(workbenchSlot[1]);
         }
 
-        if (Input.GetKeyDown(KeyCode.C) && canCraft)
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            Craft(useThisItem1, useThisItem2, craftThis);
-            Debug.Log("Craft it!");
-            canCraft = false;
-            //transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
-            GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("Craft").gameObject.SetActive(false);
+            Craft();
         }
+    }
+
+    // PUBLIC METHODS FOR INTERACTING WITH THE WORKBENCH
+
+    // Activate the workbench, display it.
+    public void Activate()
+    {
+        inventoryUIScript.EnableUI();
+
+        var workbenchCamera = transform.Find("Workbench Camera").gameObject;
+        workbenchCamera.SetActive(true);
+
+        var canvas = GameObject.Find("Canvas");
+        canvas.GetComponent<Canvas>().worldCamera = workbenchCamera.GetComponent<Camera>();
+        canvas.GetComponent<PixelArtCanvas>().Recalculate();
+
+        GameObject.Find("Character renderer").GetComponent<MeshRenderer>().enabled = false;
+        inventoryUIScript.transform.localPosition = inventoryPosition + inventoryPositionOffset;
+
+        active = true;
+    }
+
+    // Closes the workbench UI and clears the slots.
+    public void Deactivate()
+    {
+        DestroySlot1();
+        DestroySlot2();
+        HandleSlotsChanged();
+
+        transform.Find("Workbench Camera").gameObject.SetActive(false);
+
+        var canvas = GameObject.Find("Canvas");
+        canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Scene Camera").GetComponent<Camera>();
+        canvas.GetComponent<PixelArtCanvas>().Recalculate();
+
+        GameObject.Find("Character renderer").GetComponent<MeshRenderer>().enabled = true;
+        inventoryUIScript.transform.localPosition = inventoryPosition;
+
+        active = false;
     }
 
     // Put an instance of an item at one of the two workbench slots.
     public void PlaceItem(string itemType)
     {
-        if (active)
-        {
-            Transform parentSlot = null;
-
-            if (workbenchSlot[0] == null)
-            {
-                if (workbenchSlot[1] != itemType)
-                {
-                    workbenchSlot[0] = itemType;
-                    parentSlot = transform.Find("WorkbenchItem").Find("Slot1");
-                    GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("DestroySlot1").gameObject.SetActive(true);
-                    CheckForRecipes(itemType);
-                }
-            }
-            else if (workbenchSlot[1] == null)
-            {
-                if (workbenchSlot[0] != itemType)
-                {
-                    workbenchSlot[1] = itemType;
-                    parentSlot = transform.Find("WorkbenchItem").Find("Slot2");
-                    GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("DestroySlot2").gameObject.SetActive(true);
-                }
-            }
-
-            if (parentSlot == null)
-            {
-                return;
-            }
-            var itemTypePrefab = inventoryScript.itemTypePrefabs[itemType];
-            Instantiate(itemTypePrefab, parentSlot);
-        }
-
-        if (workbenchSlot[0] != null && workbenchSlot[1] != null)
-        {
-            Craftable(workbenchSlot[0], workbenchSlot[1]);
-
-            foreach (string itemTypeKey in inventoryScript.itemTypePrefabs.Keys)
-            {
-                inventoryScript.RemoveHighlight(itemTypeKey);
-            }
-        }
+        PlaceItemInSlot(itemType);
+        HandleSlotsChanged();
     }
 
     // Remove an item from the correct spot on the workbench.
@@ -176,174 +140,43 @@ public class Workbench : MonoBehaviour
         {
             DestroySlot2();
         }
-    }
 
-    public void RemoveItemSlot1()
-    {
-        if (workbenchSlot[0] != null)
-        {
-            RemoveItem(workbenchSlot[0]);
-        }
-    }
-
-    // Goes through all recipes and creates a list with all items that can be combined with this item.
-    public void CheckForRecipes(string itemType)
-    {
-        GameObject ingredient = inventoryScript.itemTypePrefabs[itemType];
-        var secondIngredient = new List<GameObject>();
-        for (int index = 0; index < recipes.Length / 3; index++)
-        {
-            if (recipes[index, 0] == ingredient)
-            {
-                secondIngredient.Add(recipes[index, 1]);
-            }
-        }
-        HighlightSecondIngredient(secondIngredient);
-    }
-
-    // Highlights every ingredient that can be combined with the current ingredient.
-    public void HighlightSecondIngredient(List<GameObject> secondIngredient)
-    {
-        foreach (GameObject ingredient in secondIngredient)
-        {
-            inventoryScript.HighlightItem(ingredient.GetComponent<CollectibleItem>().name);
-        }
-    }
-
-    // Checks if the two items on the workbench can be combined or not.
-    public void Craftable(string itemSlot1, string itemSlot2)
-    {
-        GameObject ingredientOne = inventoryScript.itemTypePrefabs[itemSlot1];
-        GameObject ingredientTwo = inventoryScript.itemTypePrefabs[itemSlot2];
-        for (int mainIngredient = 0; mainIngredient < recipes.Length / 3; mainIngredient++)
-        {
-            if (recipes[mainIngredient, 0] == ingredientOne)
-            {
-                if (recipes[mainIngredient, 1] == ingredientTwo)
-                {
-                    string item1 = recipes[mainIngredient, 0].GetComponent<CollectibleItem>().name;
-                    string item2 = recipes[mainIngredient, 1].GetComponent<CollectibleItem>().name;
-                    string resultItemType = recipes[mainIngredient, 2].GetComponent<CollectibleItem>().name;
-                    //transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(true);
-                    GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("Craft").gameObject.SetActive(true);
-                    Debug.Log("Craftable!");
-                    canCraft = true;
-                    craftThis = resultItemType;
-                    useThisItem1 = item1;
-                    useThisItem2 = item2;
-                    return;
-                }
-                else
-                {
-                    canCraft = false;
-                }
-            }
-            else
-            {
-                canCraft = false;
-            }
-        }
+        HandleSlotsChanged();
     }
 
     // Combines two items, remove them from the inventory and add the result of the items.
-    public void Craft(string ingredient1, string ingredient2, string result)
+    public void Craft()
     {
+        if (activeRecipe == null) return;
+
+        // Update player inventory.
+        inventoryScript.RemoveItem(GetCollectibleItemType(activeRecipe.ingredients[0]));
+        inventoryScript.RemoveItem(GetCollectibleItemType(activeRecipe.ingredients[1]));
+        inventoryScript.AddItem(GetCollectibleItemType(activeRecipe.result));
+
+        // Update workbench UI.
         DestroySlot1();
         DestroySlot2();
-        PlaceItem(result);
-
-        inventoryScript.RemoveItem(ingredient1);
-        inventoryScript.RemoveItem(ingredient2);
-        inventoryScript.AddItem(result);
+        PlaceItemInSlot(GetCollectibleItemType(activeRecipe.result));
+        HandleSlotsChanged();
     }
 
-    // Activate the workbench, display it.
-    public void Activate()
-    {
-        inventoryUIScript.EnableUI();
-
-        var workbenchCamera = transform.Find("Workbench Camera").gameObject;
-        workbenchCamera.SetActive(true);
-        
-        var canvas = GameObject.Find("Canvas");
-        canvas.transform.Find("WorkbenchUI").gameObject.SetActive(true);
-
-        canvas.GetComponent<Canvas>().worldCamera = workbenchCamera.GetComponent<Camera>();
-
-        GameObject.Find("Character renderer").GetComponent<MeshRenderer>().enabled = false;
-        inventoryUIScript.transform.localPosition = inventoryPosition + inventoryPositionOffset;
-        active = true;
-    }
-
-    // Closes the workbench UI and clears the slots.
-    public void Deactivate()
-    {
-        DestroySlot1();
-        DestroySlot2();
-        inventoryScript.isActive = false;
-        inventoryUIScript.gameObject.SetActive(false);
-        transform.Find("Workbench Camera").gameObject.SetActive(false);
-
-        var canvas = GameObject.Find("Canvas");
-        canvas.transform.Find("WorkbenchUI").gameObject.SetActive(false);
-
-        canvas.transform.Find("WorkbenchUI").gameObject.SetActive(true);
-
-        canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("Scene Camera").GetComponent<Camera>();
-
-        GameObject.Find("Character renderer").GetComponent<MeshRenderer>().enabled = true;
-        inventoryUIScript.transform.localPosition = inventoryPosition;
-        active = false;
-        //transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("Craft").gameObject.SetActive(false);
-    }
-
-    // Not sure I need this one.
-    public void ClearSlots()
-    {
-        if (transform.Find("WorkbenchItem").Find("Slot1").childCount > 0)
-        {
-            Destroy(transform.Find("WorkbenchItem").Find("Slot1").GetChild(0).gameObject);
-        }
-
-        if (transform.Find("WorkbenchItem").Find("Slot2").childCount > 0)
-        {
-            Destroy(transform.Find("WorkbenchItem").Find("Slot2").GetChild(0).gameObject);
-        }
-
-        foreach (string itemType in inventoryScript.itemTypePrefabs.Keys)
-        {
-            inventoryScript.RemoveHighlight(itemType);
-        }
-    }
+    // INTERNAL METHODS FOR HANDLING SLOTS
 
     // Completely clears what is in slot 1 on the workbench.
-    public void DestroySlot1()
+    private void DestroySlot1()
     {
-        if (transform.Find("WorkbenchItem").Find("Slot1").childCount > 0)
+        Transform slotTransform = transform.Find("WorkbenchItem").Find("Slot1");
+        if (slotTransform.childCount > 0)
         {
-            Destroy(transform.Find("WorkbenchItem").Find("Slot1").GetChild(0).gameObject);
+            Destroy(slotTransform.GetChild(0).gameObject);
         }
 
         workbenchSlot[0] = null;
-
-        foreach (string itemType in inventoryScript.itemTypePrefabs.Keys)
-        {
-            inventoryScript.RemoveHighlight(itemType);
-        }
-
-        if (workbenchSlot[1] != null)
-        {
-            CheckForRecipes(workbenchSlot[1]);
-        }
-
-        //transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("Craft").gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("DestroySlot1").gameObject.SetActive(false);
     }
 
     // Completely clears what is in slot 2 on the workbench.
-    public void DestroySlot2()
+    private void DestroySlot2()
     {
         if (transform.Find("WorkbenchItem").Find("Slot2").childCount > 0)
         {
@@ -351,27 +184,98 @@ public class Workbench : MonoBehaviour
         }
 
         workbenchSlot[1] = null;
-
-        foreach (string itemType in inventoryScript.itemTypePrefabs.Keys)
-        {
-            inventoryScript.RemoveHighlight(itemType);
-        }
-
-        if (workbenchSlot[0] != null)
-        {
-            CheckForRecipes(workbenchSlot[0]);
-        }
-
-        //transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("Craft").gameObject.SetActive(false);
-        GameObject.Find("Canvas").transform.Find("WorkbenchUI").Find("DestroySlot2").gameObject.SetActive(false);
     }
 
-    public void PressCraftButton()
+    private void PlaceItemInSlot(string itemType)
     {
-        if (canCraft)
+        Transform parentSlot = null;
+
+        if (workbenchSlot[0] == null)
         {
-            Craft(useThisItem1, useThisItem2, craftThis);
+            if (workbenchSlot[1] != itemType)
+            {
+                workbenchSlot[0] = itemType;
+                parentSlot = transform.Find("WorkbenchItem").Find("Slot1");
+            }
+        }
+        else if (workbenchSlot[1] == null)
+        {
+            if (workbenchSlot[0] != itemType)
+            {
+                workbenchSlot[1] = itemType;
+                parentSlot = transform.Find("WorkbenchItem").Find("Slot2");
+            }
+        }
+
+        if (parentSlot != null)
+        {
+            var itemTypePrefab = inventoryScript.itemTypePrefabs[itemType];
+            Instantiate(itemTypePrefab, parentSlot);
+        }
+    }
+
+    private void HandleSlotsChanged()
+    {
+        // Find out if we have items for a valid recipe.
+        DetermineActiveRecipe();
+
+        // Show hammer if we have a valid recipe.
+        transform.Find("WorkbenchItem").Find("Hammer").gameObject.SetActive(activeRecipe != null);
+
+        // Highlight inventory items.
+        RecalculateHighlights();
+    }
+
+    // Checks if the two items on the workbench can be combined or not.
+    private void DetermineActiveRecipe()
+    {
+        activeRecipe = null;
+
+        if (workbenchSlot[0] != null && workbenchSlot[1] != null)
+        {
+            if (recipesForIngredients.ContainsKey(workbenchSlot[0]))
+            {
+                Dictionary<string, Recipe> recipesForIngredient1 = recipesForIngredients[workbenchSlot[0]];
+
+                if (recipesForIngredient1.ContainsKey(workbenchSlot[1]))
+                {
+                    activeRecipe = recipesForIngredient1[workbenchSlot[1]];
+                }
+            }
+        }
+    }
+
+    private void RecalculateHighlights()
+    {
+        bool onlySlot1 = workbenchSlot[0] != null && workbenchSlot[1] == null;
+        bool onlySlot2 = workbenchSlot[0] == null && workbenchSlot[1] != null;
+
+        RemoveAllHighlights();
+
+        if (onlySlot1 || onlySlot2)
+        {
+            HandleHighlightsForItem(workbenchSlot[0] ?? workbenchSlot[1]);
+        }
+    }
+
+    private void RemoveAllHighlights()
+    {
+        foreach (string itemTypeKey in inventoryScript.itemTypePrefabs.Keys)
+        {
+            inventoryScript.SetHighlightForItem(itemTypeKey, false);
+        }
+    }
+
+    // Highlights all potential ingredients.
+    private void HandleHighlightsForItem(string itemType)
+    {
+        // Check if we have any recipes with this item.
+        if (!recipesForIngredients.ContainsKey(itemType)) return;
+
+        // Highlight all potential ingredients.
+        foreach (string potentialIngredient in recipesForIngredients[itemType].Keys)
+        {
+            inventoryScript.SetHighlightForItem(potentialIngredient, true);
         }
     }
 }

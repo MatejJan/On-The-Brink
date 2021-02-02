@@ -36,6 +36,13 @@ public class InventoryUI : MonoBehaviour
     {
         inventoryScript.isActive = false;
         gameObject.SetActive(false);
+
+        Workbench workbench = GameObject.Find("Workbench")?.GetComponent<Workbench>();
+
+        if (workbench && workbench.active)
+        {
+            workbench.Deactivate();
+        }
     }
 
     // Creates slots in the inventory for all items.
@@ -89,5 +96,10 @@ public class InventoryUI : MonoBehaviour
     public void RefreshItem(string itemType, ItemData itemData)
     {
         inventoryItems[itemType].GetComponent<InventoryItem>().Refresh(itemData);
+    }
+
+    public void SetHighlightForItem(string itemType, bool highlight)
+    {
+        inventoryItems[itemType].GetComponent<InventoryItem>().SetHighlight(highlight);
     }
 }

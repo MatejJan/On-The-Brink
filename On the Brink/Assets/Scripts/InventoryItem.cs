@@ -104,16 +104,23 @@ public class InventoryItem : MonoBehaviour
                 icon.GetComponent<MeshRenderer>().material = dontHaveMaterial;
             }
         }
+    }
 
-        bool highlight = itemData.Highlight;
+    public void SetHighlight(bool highlight) 
+    { 
+        Image image = transform.Find("Background").GetComponent<Image>();
+        Color backgroundColor = image.color;
+
         if (highlight)
         {
-            transform.Find("Background").GetComponent<Image>().gameObject.SetActive(true);
+            backgroundColor.a = 1;
         }
         else
         {
-            transform.Find("Background").GetComponent<Image>().gameObject.SetActive(false);
+            backgroundColor.a = 0;
         }
+
+        image.color = backgroundColor;
     }
 
     // When the mouse is over the item show the tool tip, the name of the item.
@@ -131,8 +138,11 @@ public class InventoryItem : MonoBehaviour
         transform.Find("Tool Tip").gameObject.SetActive(false);
     }
 
-    public void PlaceItem()
+    public void OnPointerClick()
     {
+        // We only need to handle inventory clicks when in the workbench UI.
+        if (!workbenchScript.active) return;
+
         if (count > 0)
         {
             workbenchScript.PlaceItem(itemType);
