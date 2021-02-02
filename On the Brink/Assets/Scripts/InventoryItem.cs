@@ -22,15 +22,12 @@ public class InventoryItem : MonoBehaviour
     private bool found;
     private int count;
 
-    public Workbench workbenchScript;
-
     private GameObject silhouette;
     private GameObject icon;
 
     // Start is called before the first frame update
     void Start()
     {
-        workbenchScript = GameObject.Find("Workbench").GetComponent<Workbench>();
         defaultBackgroundColor = transform.Find("Background").GetComponent<Image>().color;
     }
 
@@ -140,6 +137,8 @@ public class InventoryItem : MonoBehaviour
 
     public void OnPointerClick()
     {
+        Workbench workbenchScript = GameObject.Find("Workbench").GetComponent<Workbench>();
+
         // We only need to handle inventory clicks when in the workbench UI.
         if (!workbenchScript.active) return;
 

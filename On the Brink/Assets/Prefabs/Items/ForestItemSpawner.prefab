@@ -15,12 +15,12 @@ PrefabInstance:
     - target: {fileID: 6301226382563872970, guid: f1cf0e9f986f7d040a7a18de076478de,
         type: 3}
       propertyPath: _data._objectReferences.Array.size
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6301226382563872970, guid: f1cf0e9f986f7d040a7a18de076478de,
         type: 3}
       propertyPath: _data._json
-      value: '{"declarations":{"collection":{"$content":[{"name":"SlotFree","value":{"$content":true,"$type":"System.Boolean"},"$version":"A"},{"name":"ItemList","value":{"$content":[0,1,2,3,4],"$type":"System.Collections.Generic.List`1[[UnityEngine.GameObject,
+      value: '{"declarations":{"collection":{"$content":[{"name":"SlotFree","value":{"$content":true,"$type":"System.Boolean"},"$version":"A"},{"name":"ItemList","value":{"$content":[0,1,2,3,4,5,6],"$type":"System.Collections.Generic.List`1[[UnityEngine.GameObject,
         UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
       objectReference: {fileID: 0}
     - target: {fileID: 6301226382563872970, guid: f1cf0e9f986f7d040a7a18de076478de,
@@ -40,6 +40,18 @@ PrefabInstance:
       propertyPath: _data._objectReferences.Array.data[4]
       value: 
       objectReference: {fileID: 6175028579678468622, guid: ced9db6c713b9be44a4aefe05528c75e,
+        type: 3}
+    - target: {fileID: 6301226382563872970, guid: f1cf0e9f986f7d040a7a18de076478de,
+        type: 3}
+      propertyPath: _data._objectReferences.Array.data[5]
+      value: 
+      objectReference: {fileID: 6175028579678468622, guid: 6f94dd62ecd9b834aaf4e8dba89da81c,
+        type: 3}
+    - target: {fileID: 6301226382563872970, guid: f1cf0e9f986f7d040a7a18de076478de,
+        type: 3}
+      propertyPath: _data._objectReferences.Array.data[6]
+      value: 
+      objectReference: {fileID: 6175028579678468622, guid: ca6e4bcbcccaed74698f26e57f2cd48a,
         type: 3}
     - target: {fileID: 6301226382563872971, guid: f1cf0e9f986f7d040a7a18de076478de,
         type: 3}
