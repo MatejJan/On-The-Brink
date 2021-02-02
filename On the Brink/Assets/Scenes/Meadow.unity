@@ -857,11 +857,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 350091725}
   m_LocalRotation: {x: -0.68628097, y: -0, z: -0, w: 0.7273366}
-  m_LocalPosition: {x: 5.32, y: 1.06, z: 1.92}
+  m_LocalPosition: {x: 5.32, y: 1.06, z: 2}
   m_LocalScale: {x: 0.58063376, y: 0.6733, z: 0.6733}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: -86.673004, y: 0, z: 0}
 --- !u!1 &370948337
 GameObject:
@@ -1747,7 +1747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"Bounds","value":{"xMin":-11.0,"yMin":-5.0,"xMax":11.0,"yMax":0.0,"$type":"UnityEngine.Rect"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
+    _json: '{"declarations":{"collection":{"$content":[{"name":"Bounds","value":{"xMin":-11.0,"yMin":-5.0,"xMax":29.0,"yMax":0.0,"$type":"UnityEngine.Rect"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
     _objectReferences: []
 --- !u!4 &588266000
 Transform:
@@ -1761,7 +1761,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &591559455
 PrefabInstance:
@@ -2337,7 +2337,7 @@ PrefabInstance:
     - target: {fileID: 3274447641186367271, guid: 3341ab5d279d7cd4190545f6fb04c184,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3274447641186367271, guid: 3341ab5d279d7cd4190545f6fb04c184,
         type: 3}
@@ -4749,6 +4749,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1691593724}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1694935300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1694935301}
+  m_Layer: 0
+  m_Name: FromBeach
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1694935301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694935300}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4, y: 0, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1699359782 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1779597812691083681, guid: 3d4a63e4e6f36ba428646e09b79fbe41,

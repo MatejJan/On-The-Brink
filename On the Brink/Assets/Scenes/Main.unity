@@ -505,6 +505,7 @@ GameObject:
   - component: {fileID: 291482936}
   - component: {fileID: 291482935}
   - component: {fileID: 291482934}
+  - component: {fileID: 291482938}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -541,7 +542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"WalkSpeed","value":{"$content":1.4,"$type":"System.Single"},"$version":"A"},{"name":"RunSpeed","value":{"$content":2.8,"$type":"System.Single"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
+    _json: '{"declarations":{"collection":{"$content":[{"name":"WalkSpeed","value":{"$content":1.0,"$type":"System.Single"},"$version":"A"},{"name":"RunSpeed","value":{"$content":1.8,"$type":"System.Single"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
     _objectReferences: []
 --- !u!54 &291482936
 Rigidbody:
@@ -577,6 +578,20 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!136 &291482938
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 291482933}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.76
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &291482941
 Transform:
   m_ObjectHideFlags: 0
@@ -585,7 +600,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 291482933}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.391, y: 0.748, z: 2.96}
+  m_LocalPosition: {x: 3.81, y: 0.085, z: 5.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2112367455}
@@ -2094,7 +2109,7 @@ PrefabInstance:
     - target: {fileID: 3590414390515517588, guid: e044be8807e5e8c46a09260ea51b70b5,
         type: 3}
       propertyPath: _data._json
-      value: '{"declarations":{"collection":{"$content":[{"name":"blackScreenAlpha","value":{"$content":0.0,"$type":"System.Single"},"$version":"A"},{"name":"blackScreenObject","value":{"$content":0,"$type":"UnityEngine.Object"},"$version":"A"},{"name":"fadeDuration","value":{"$content":0.3,"$type":"System.Single"},"$version":"A"},{"name":"nextSceneName","value":null,"$version":"A"},{"name":"currentSceneName","value":{"$content":"Meadow","$type":"System.String"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
+      value: '{"declarations":{"collection":{"$content":[{"name":"blackScreenAlpha","value":{"$content":0.0,"$type":"System.Single"},"$version":"A"},{"name":"blackScreenObject","value":{"$content":0,"$type":"UnityEngine.Object"},"$version":"A"},{"name":"fadeDuration","value":{"$content":0.5,"$type":"System.Single"},"$version":"A"},{"name":"nextSceneName","value":null,"$version":"A"},{"name":"currentSceneName","value":{"$content":"Meadow","$type":"System.String"},"$version":"A"},{"name":"transitioning","value":{"$content":false,"$type":"System.Boolean"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
       objectReference: {fileID: 0}
     - target: {fileID: 3590414390515517588, guid: e044be8807e5e8c46a09260ea51b70b5,
         type: 3}
@@ -2239,7 +2254,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1693451760}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.5, z: -12}
+  m_LocalPosition: {x: 0, y: 4.5, z: -13.74}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

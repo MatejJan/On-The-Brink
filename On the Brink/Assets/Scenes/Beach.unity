@@ -325,7 +325,7 @@ Transform:
   m_GameObject: {fileID: 546869040}
   m_LocalRotation: {x: -0.68628097, y: -0, z: -0, w: 0.7273366}
   m_LocalPosition: {x: 0, y: 1.06, z: -10}
-  m_LocalScale: {x: 2, y: 0.6733, z: 0.6733}
+  m_LocalScale: {x: 4, y: 0.6733, z: 0.6733}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
@@ -354,7 +354,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548038285}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.217, z: -8.19}
+  m_LocalPosition: {x: 0, y: 0.217, z: -6.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -739,7 +739,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _json: '{"declarations":{"collection":{"$content":[{"name":"Bounds","value":{"xMin":-20.0,"yMin":-15.0,"xMax":20.0,"yMax":5.0,"$type":"UnityEngine.Rect"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
+    _json: '{"declarations":{"collection":{"$content":[{"name":"Bounds","value":{"xMin":-10.0,"yMin":-15.0,"xMax":10.0,"yMax":5.0,"$type":"UnityEngine.Rect"},"$version":"A"}],"$version":"A"},"$version":"A"}}'
     _objectReferences: []
 --- !u!4 &1551421152
 Transform:
@@ -968,10 +968,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1916544167}
-  m_LocalRotation: {x: 0.88506854, y: 0.15685974, z: -0.31724548, w: 0.3023311}
+  m_LocalRotation: {x: 0.85746074, y: 0.13046189, z: -0.32898247, w: 0.37351233}
   m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 39.397003, y: -142.84601, z: -186.377}
+  m_LocalEulerAnglesHint: {x: 46.584003, y: -137.229, z: -178.16301}
